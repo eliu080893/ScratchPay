@@ -1,0 +1,20 @@
+#input-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.input-field {
+    display: grid;
+    grid-template-columns: 1;
+    grid-template-rows: 2;
+    justify-items: center;
+}
+
+input {
+    width: 15vw;
+}
+
+button {
+    width: 10vw;
+    height: 3rem;
+}

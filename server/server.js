@@ -18,6 +18,7 @@ app.use(express.static(path.join(__dirname, '../dist/')));
 
 app.post('/',
     filterController.fetchResults,
+    filterController.convertResults,
     filterController.filterResults,
     (req, res) => {
         return res.status(200).json(res.locals.searchResults)

@@ -7,9 +7,9 @@ const vetURL = 'https://storage.googleapis.com/scratchpay-code-challenge/vet-cli
 
 const filterController = {};
 
+// This middleware function serves to call both API's and store the data into our response object
 filterController.fetchResults = async (req, res, next) => {
 
-    console.log('reached fetchResults')
     try {
         await fetch(dentalURL)
         .then( data => data.json())
@@ -33,7 +33,7 @@ filterController.fetchResults = async (req, res, next) => {
     }
     catch(err) {
         return next({
-            log: 'Error in filterController.fetchResults. Could not successfully fetch results from Dental Scratchpay API',
+            log: 'Error in filterController.fetchResults. Could not successfully fetch results from Vet Scratchpay API',
             message: {err: err}
         });
     }
@@ -41,6 +41,18 @@ filterController.fetchResults = async (req, res, next) => {
     return next();
 }
 
+// This middleware function serves to convert the kay names of the Vet Data to be consistent with the key name of the Dental Data
+filterController.convertResults = (req, res, next) => {
+
+    const vetData = res.locals.vetData;
+    for (let entry of vetData) {
+        convertVetData(entry)
+    }
+
+    return next();
+}
+
+// This middleware function serves to filter out all the results according to the user input. If a filter field is entered, it will narrow down the search by calling a specific filter function.
 filterController.filterResults = (req, res, next) => {
 
     console.log('Reached filteredResults')
@@ -52,38 +64,40 @@ filterController.filterResults = (req, res, next) => {
         closeTime
     } = req.body;
 
-    // console.log(name, location, openTime, closeTime)
-
-    // const dentalTranslatedObject = {
-    //     name: name,
-    //     stateName: location,
-    //     'availability.from': openTime,
-    //     'availability.from': closeTime
-    // }
-    // const venTranslatedObject = {
-    //     clinicName: name,
-    //     stateCode: location,
-    //     'opening.from': openTime,
-    //     'opening.from': closeTime
-    // }
+    // Define the user's filter searches, and the filter functions to call.
+    let filterVariables = [name, location, openTime, closeTime]
+    let filterFunctions = [checkNameMatch, checkLocationMatch, checkOpenTime, checkCloseTime]
 
     const vetData = res.locals.vetData;
     const dentalData= res.locals.dentalData;
-    const totalData = [...vetData, ...dentalData]
+    let totalData = [...vetData, ...dentalData]
 
-    let filteredDental = dentalData.filter( (entry) => {
-        return (
-            // checkNameMatch(entry, name) &&
-            checkLocationMatch(entry, location) &&
-            // checkOpenTime(entry, openTime) &&
-            checkCloseTime(entry, closeTime)
-        )
+    // Iterate through each inputted filter search, and invoke the corresponding filter function on the all entries.
+    filterVariables.forEach( (el, index) => {
+        // console.log('Filtering for: ' + el)
+        if (el !== '') {
+            totalData = totalData.filter( (entry) => {
+                // console.log(el, '-----', filterFunctions[index](entry, el))
+                return filterFunctions[index](entry, el)
+            })
+        }
     })
-
-    console.log(filteredDental)
 
     res.locals.searchResults = totalData;
     return next();
+}
+
+function convertVetData(entry) {
+    entry.name = entry.clinicName;
+    delete entry.clinicName;
+
+    entry.stateName = unitedStates[entry.stateCode];
+    delete entry.stateCode;
+
+    entry.availability = {...entry.opening}
+    delete entry.opening
+
+    return entry
 }
 
 function checkNameMatch(entry, string) {
@@ -103,19 +117,19 @@ function checkNameMatch(entry, string) {
 
 function checkLocationMatch(entry, location) {
     return(
-        entry.stateName === location
+        entry.stateName.toLowerCase() === location.toLowerCase()
     )
 }
 
 function checkOpenTime(entry, openTime) {
     return (
-        entry.availability.from <= openTime
+        entry.availability.from >= openTime
     )
 }
 
 function checkCloseTime(entry, closeTime) {
     return (
-        entry.availability.to >= closeTime
+        entry.availability.to <= closeTime
     )
 }
 

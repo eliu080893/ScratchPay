@@ -1,0 +1,33 @@
+.clinic {
+    border: 1px red solid;
+    display: grid;
+    grid-template-columns: 1;
+    grid-template-rows: 4;
+    width: 15vw;
+    min-height: 5rem;
+    min-width: 12rem;
+    margin: 1rem 1rem 1rem 1rem;
+    background-color: blueviolet;
+    color: white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-radius: 1rem;
+
+    div{
+        justify-self: center;
+    }
+
+    #clinicName {
+        font-size: larger;
+        text-align: center;
+    }
+    
+    #statename {
+        font-size: large;
+        text-align: center;
+    }
+
+    .times {
+        font-size: smaller;
+    }
+}
+

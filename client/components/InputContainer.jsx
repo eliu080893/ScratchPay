@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import styles from '../styles/InputContainer.scss';
 
-const InputContainer = () => {
+const InputContainer = (props) => {
     const [name, setName] = useState('')
     const [location, setLocation] = useState('')
     const [openTime, setOpenTime] = useState('')
     const [closeTime, setCloseTime] = useState('')
-    const [clinic, setClinic] = useState([])
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // console.log('hi')
 
         let payload = {
             name,
@@ -27,7 +25,7 @@ const InputContainer = () => {
         })
         .then( res => res.json())
         .then( res => {
-            setClinic(res)
+            props.setClinic(res)
             console.log(res)
         })
         .catch( err => {
@@ -36,58 +34,62 @@ const InputContainer = () => {
     }
 
     return(
-    <form onSubmit={ (e) => handleSubmit(e)}>
-        <div id='input-container'>
+        <div>
+            <form onSubmit={ (e) => handleSubmit(e)}>
+                <div id='input-container'>
 
-            <div className='input-field'>
-                <label for='name'>Enter Clinic Name</label>
-                <input 
-                    id='name' 
-                    type='text' 
-                    placeholder='name' 
-                    onChange={ (e) => setName(e.target.value)}>
+                    <div className='input-field'>
+                        <label for='name'>Enter Clinic Name</label>
+                        <input 
+                            id='name' 
+                            type='text' 
+                            placeholder='name' 
+                            onChange={ (e) => setName(e.target.value)}>
 
-                </input>
-            </div>
+                        </input>
+                    </div>
 
-            <div className='input-field'>
-                <label for='location'>Enter Clinic Name</label>
-                <input 
-                    id='location' 
-                    type='text' 
-                    placeholder='location'
-                    onChange={ (e) => setLocation(e.target.value)}>
+                    <div className='input-field'>
+                        <label for='location'>Enter State Name</label>
+                        <input 
+                            id='location' 
+                            type='text' 
+                            placeholder='location'
+                            onChange={ (e) => setLocation(e.target.value)}>
 
-                </input>
-            </div>
+                        </input>
+                    </div>
 
-            <div className='input-field'>
-                <label for='openTime'>Enter Clinic Name</label>
-                <input 
-                    id='openTime' 
-                    type='number' 
-                    placeholder='time'
-                    onChange={ (e) => setOpenTime(e.target.value)}>
+                    <div className='input-field'>
+                        <label for='openTime'>Enter Earliest Opening Time</label>
+                        <input 
+                            id='openTime' 
+                            type='number' 
+                            placeholder='time'
+                            onChange={ (e) => setOpenTime(e.target.value)}>
 
-                </input>
-            </div>
+                        </input>
+                    </div>
 
-            <div className='input-field'>
-                <label for='closeTime'>Enter Clinic Name</label>
-                <input 
-                    id='closeTime' 
-                    type='number' 
-                    placeholder='time'
-                    onChange={ (e) => setCloseTime(e.target.value)}>
+                    <div className='input-field'>
+                        <label for='closeTime'>Enter Latest Closing Time</label>
+                        <input 
+                            id='closeTime' 
+                            type='number' 
+                            placeholder='time'
+                            onChange={ (e) => setCloseTime(e.target.value)}>
 
-                </input>
-            </div>
-        </div>
+                        </input>
+                    </div>
+                </div>
 
-        <button type='submit'>
-            {(!name && !location && !openTime && !closeTime) ? 'Search All' : 'Search by Filter' } 
-        </button>
-    </form>
+                <button type='submit'>
+                    {(!name && !location && !openTime && !closeTime) ? 'Search All' : 'Search by Filter' } 
+                </button>
+            </form>
+
+
+         </div>
     )
 }
 

@@ -1,13 +1,55 @@
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const { checkNameMatch, checkLocationMatch, checkOpenTime, checkCloseTime } = require('./utils/filterFunctions')
-const unitedStates = require('./constants')
+const usStates = require('./constants')
 
 const dentalURL = 'https://storage.googleapis.com/scratchpay-code-challenge/dental-clinics.json'
 const vetURL = 'https://storage.googleapis.com/scratchpay-code-challenge/vet-clinics.json'
 
 const filterController = {};
 
-// This middleware function serves to call both API's and store the data into our response object
+// This middleware function serves to sanitize the user input to make sure that all the data is of the write form and type. If any data is not formatted properly, the search will error out.
+filterController.sanitizeInput = (req, res, next) => {
+
+    const {
+        location,
+        openTime,
+        closeTime
+    } = req.body;
+
+    let stateArray = Object.values(usStates).map( location => location.toLowerCase() );
+    stateArray.push('allstates')
+
+    // Check to make sure state location is a real state
+    if ( !(stateArray.includes(location.toLowerCase())) )   {
+        return next({
+            log: 'Error in filterController.sanitizeInput. Invalid input for Clinic State Name.',
+            message: {err: 'Invalid State Name'}
+        })
+    }
+
+    const validInputTimes = Array.from({length: 26}, (_, i) => i - 1);
+    
+    // Check to make sure the opening input time are numeric in value
+    if ( !(validInputTimes.includes(Number(openTime)))) {
+        return next({
+            log: 'Error in filterController.sanitizeInput. Invalid input for Clinic Opening Time.',
+            message: {err: 'Invalid Input Time'}
+        })
+    }
+
+    // Check to make sure the closing input time are numeric in value
+    if ( !(validInputTimes.includes(Number(closeTime)))) {
+        console.log('3 is broken')
+        return next({
+            log: 'Error in filterController.sanitizeInput. Invalid input for Clinic Closing Time.',
+            message: {err: 'Invalid Closing Time'}
+        })
+    }
+
+    return next();
+}
+
+// This middleware function serves to call both API's and store the data into our response body
 filterController.fetchResults = async (req, res, next) => {
 
     try {
@@ -55,8 +97,6 @@ filterController.convertResults = (req, res, next) => {
 // This middleware function serves to filter out all the results according to the user input. If a filter field is entered, it will narrow down the search by calling a specific filter function.
 filterController.filterResults = (req, res, next) => {
 
-    console.log('Reached filteredResults')
-
     const {
         name,
         location,
@@ -77,7 +117,6 @@ filterController.filterResults = (req, res, next) => {
         // console.log('Filtering for: ' + el)
         if (el !== '') {
             totalData = totalData.filter( (entry) => {
-                // console.log(el, '-----', filterFunctions[index](entry, el))
                 return filterFunctions[index](entry, el)
             })
         }
@@ -92,7 +131,7 @@ function convertVetData(entry) {
     entry.name = entry.clinicName;
     delete entry.clinicName;
 
-    entry.stateName = unitedStates[entry.stateCode];
+    entry.stateName = usStates[entry.stateCode];
     delete entry.stateCode;
 
     entry.availability = {...entry.opening}

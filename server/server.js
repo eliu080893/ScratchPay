@@ -17,6 +17,7 @@ app.get('/', (req,res) => {
 });
 
 app.post('/',
+    filterController.sanitizeInput,
     filterController.fetchResults,
     filterController.convertResults,
     filterController.filterResults,

@@ -1,16 +1,16 @@
 import React from 'react';
 import {v4 as uuidv4} from 'uuid';
 import Clinic from './Clinic.jsx';
-import styles from '../styles/ClinicContainer.scss';
+import '../styles/ClinicContainer.scss';
 
 const ClinicContainer = (props) => {
     
-    let clinicsArray = props.clinic.map( (object) => {
+    const clinicsArray = props.clinic.map( (clinic) => {
         return (
         <Clinic 
-            name={object.name} 
-            stateName={object.stateName} 
-            availability = {object.availability}
+            name={clinic.name} 
+            stateName={clinic.stateName} 
+            availability = {clinic.availability}
             key={ uuidv4()}/>
          )
     });

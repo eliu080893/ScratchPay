@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import InputContainer from './InputContainer.jsx';
 import ClinicContainer from './ClinicContainer.jsx';
-import styles from '../styles/App.scss'
+import '../styles/App.scss'
 
 const App = () => {
     const [clinic, setClinic] = useState([])
 
-    useEffect( ()=> {
-        console.log('state changed in App.jsx', clinic)
-    }, [clinic])
+    // useEffect( ()=> {
+    //     console.log('state changed in App.jsx', clinic)
+    // }, [clinic])
 
     return(
     <div id='app'>

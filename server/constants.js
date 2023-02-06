@@ -1,4 +1,4 @@
-module.exports = unitedStates = {
+module.exports = usStates = {
     "AL": "Alabama",
     "AK": "Alaska",
     "AS": "American Samoa",

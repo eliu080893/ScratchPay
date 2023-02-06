@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styles/Clinic.scss';
+import '../styles/Clinic.scss';
 
 const Clinic = (props) => {
     return(

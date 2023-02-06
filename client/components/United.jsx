@@ -10,10 +10,8 @@ const United = (props) => {
     return(
         <select
             id='location' 
-            type='text' 
-            placeholder='location'
             onChange={ (e) => props.setLocation(e.target.value)}>
-            <option value='' key='blankState'>--</option>
+            <option value='allstates' key='allStates'>All states</option>
             {stateArray}
         </select>
     )

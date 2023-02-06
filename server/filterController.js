@@ -1,6 +1,6 @@
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const { checkNameMatch, checkLocationMatch, checkOpenTime, checkCloseTime } = require('./utils/filterFunctions')
 const unitedStates = require('./constants')
-const fetch = (...args) =>
-  import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const dentalURL = 'https://storage.googleapis.com/scratchpay-code-challenge/dental-clinics.json'
 const vetURL = 'https://storage.googleapis.com/scratchpay-code-challenge/vet-clinics.json'
@@ -41,7 +41,7 @@ filterController.fetchResults = async (req, res, next) => {
     return next();
 }
 
-// This middleware function serves to convert the kay names of the Vet Data to be consistent with the key name of the Dental Data
+// This middleware function serves to convert the key names of the Vet Data to be consistent with the key name of the Dental Data
 filterController.convertResults = (req, res, next) => {
 
     const vetData = res.locals.vetData;
@@ -72,7 +72,7 @@ filterController.filterResults = (req, res, next) => {
     const dentalData= res.locals.dentalData;
     let totalData = [...vetData, ...dentalData]
 
-    // Iterate through each inputted filter search, and invoke the corresponding filter function on the all entries.
+    // Iterate through each inputted filter search, and invoke the corresponding filter function on all entries.
     filterVariables.forEach( (el, index) => {
         // console.log('Filtering for: ' + el)
         if (el !== '') {
@@ -87,6 +87,7 @@ filterController.filterResults = (req, res, next) => {
     return next();
 }
 
+// This helper function converts the Vet Data 'key' names to be consistent with the Dental Data keys
 function convertVetData(entry) {
     entry.name = entry.clinicName;
     delete entry.clinicName;
@@ -99,39 +100,5 @@ function convertVetData(entry) {
 
     return entry
 }
-
-function checkNameMatch(entry, string) {
-    // console.log('checkNameMatch - entry: ', entry, '. Looking for name: ', string)
-    // console.log('---', entry.name.toLowerCase().split(" ").includes(string.toLowerCase()))
-
-    // Returns true if
-    // 1) You enter a word that is in the name of the entry
-    // 2) You enter 4 or more characters that can match the entry
-    // 3) You enter the complete entry name
-    return (
-        entry.name.toLowerCase().split(" ").includes(string.toLowerCase()) ||
-        (entry.name.toLowerCase().includes(string.toLowerCase()) && string.length >= 4) ||
-        entry.name.toLowerCase() === string.toLowerCase()
-    )
-}
-
-function checkLocationMatch(entry, location) {
-    return(
-        entry.stateName.toLowerCase() === location.toLowerCase()
-    )
-}
-
-function checkOpenTime(entry, openTime) {
-    return (
-        entry.availability.from >= openTime
-    )
-}
-
-function checkCloseTime(entry, closeTime) {
-    return (
-        entry.availability.to <= closeTime
-    )
-}
-
 
 module.exports = filterController;

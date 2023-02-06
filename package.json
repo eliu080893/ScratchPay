@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server/server.js",
     "build": "webpack --config webpack.config.js --mode production",
-    "dev": "concurrently \"webpack-dev-server --hot --open --mode development\" \"nodemon server/server.js\" "
+    "dev": "concurrently \"webpack-dev-server --hot --open --mode development\" \"nodemon server/server.js\" ",
+    "test": "jest --verbose"
   },
   "author": "",
   "license": "ISC",
@@ -29,8 +30,10 @@
     "concurrently": "^7.4.0",
     "css-loader": "^6.7.1",
     "html-webpack-plugin": "^5.5.0",
+    "jest": "^29.4.1",
     "sass-loader": "^13.1.0",
     "style-loader": "^3.3.1",
+    "supertest": "^6.3.3",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.11.1"

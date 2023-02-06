@@ -12,9 +12,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../dist/')));
 
 // While in development, this should just serve the index.html entry point file
-// app.get('/', (req,res) => {
-//     return res.status(200).sendFile(path.join(__dirname,'../src/index.html'))
-// });
+app.get('/', (req,res) => {
+    return res.status(200).sendFile(path.join(__dirname,'../src/index.html'))
+});
 
 app.post('/',
     filterController.fetchResults,

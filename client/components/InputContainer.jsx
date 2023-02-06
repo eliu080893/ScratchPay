@@ -62,7 +62,7 @@ const InputContainer = (props) => {
                     </div>
 
                     <div className='input-field'>
-                        <label for='openTime'>Enter Earliest Opening Time</label>
+                        <label for='openTime'>Show all clinics open after:</label>
                         <select 
                             id='openTime' 
                             value = {openTime}
@@ -96,7 +96,7 @@ const InputContainer = (props) => {
                     </div>
 
                     <div className='input-field'>
-                        <label for='closeTime'>Enter Latest Closing Time</label>
+                        <label for='closeTime'>Show all clinics closed before:</label>
                         <select 
                             id='closeTime' 
                             type='number' 

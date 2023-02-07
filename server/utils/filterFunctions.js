@@ -19,24 +19,25 @@ filterFunctions.checkLocationMatch = (entry, location) => {
     )
 }
 
-// Returns true if the time the clinic opens is after the user's filter
-filterFunctions.checkOpenTime = (entry, openTime) => {
-    let minutes = parseInt(entry.availability.from.slice(3)) / 60 
-    let hours = (parseInt(entry.availability.from))
 
-    return (
-        minutes + hours >= Number(openTime)
-    )
-}
+// Returns true if there is any overlap between when the user needs to go in, and the clinic operating hours
+filterFunctions.checkAvailability = (entry, openTime, closeTime) => {
+    let openMinutes = parseInt(entry.availability.from.slice(3)) / 60 ;
+    let openHours = (parseInt(entry.availability.from));
+    let opening = openMinutes + openHours;
 
-// Returns true if the time the clinic closes is before the user's filter
-filterFunctions.checkCloseTime = (entry, closeTime) => {
-    let minutes = parseInt(entry.availability.to.slice(3)) / 60 
-    let hours = (parseInt(entry.availability.to))
+    let closeMinutes = parseInt(entry.availability.to.slice(3)) / 60 ;
+    let closeHours = (parseInt(entry.availability.to));
+    let closing = closeMinutes + closeHours;
 
-    return (
-        minutes + hours <= Number(closeTime)
-    )
+
+    for (let available = openTime; available <= closeTime; available++) {
+        if ((available > opening) && (available < closing)) {
+            return true
+        }
+    }
+
+    return false;
 }
 
 module.exports = filterFunctions;

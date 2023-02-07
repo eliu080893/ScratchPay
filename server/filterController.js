@@ -1,5 +1,5 @@
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
-const { checkNameMatch, checkLocationMatch, checkOpenTime, checkCloseTime } = require('./utils/filterFunctions')
+const { checkNameMatch, checkLocationMatch, checkAvailability } = require('./utils/filterFunctions')
 const usStates = require('./constants')
 
 const dentalURL = 'https://storage.googleapis.com/scratchpay-code-challenge/dental-clinics.json'
@@ -12,9 +12,13 @@ filterController.sanitizeInput = (req, res, next) => {
 
     const {
         location,
+        availability
+    } = req.body;
+
+    const {
         openTime,
         closeTime
-    } = req.body;
+    } = availability;
 
     let stateArray = Object.values(usStates).map( location => location.toLowerCase() );
     stateArray.push('allstates')
@@ -100,27 +104,39 @@ filterController.filterResults = (req, res, next) => {
     const {
         name,
         location,
-        openTime,
-        closeTime
+        availability
     } = req.body;
 
-    // Define the user's filter searches, and the filter functions to call.
-    let filterVariables = [name, location, openTime, closeTime]
-    let filterFunctions = [checkNameMatch, checkLocationMatch, checkOpenTime, checkCloseTime]
+    let {
+        openTime,
+        closeTime
+    } = availability;
+
+    openTime = Number(openTime);
+    closeTime = Number(closeTime);
 
     const vetData = res.locals.vetData;
     const dentalData= res.locals.dentalData;
     let totalData = [...vetData, ...dentalData]
 
-    // Iterate through each inputted filter search, and invoke the corresponding filter function on all entries.
-    filterVariables.forEach( (el, index) => {
-        // console.log('Filtering for: ' + el)
-        if (el !== '') {
-            totalData = totalData.filter( (entry) => {
-                return filterFunctions[index](entry, el)
-            })
-        }
-    })
+    // Filter total data set by Clinic Name
+    if (name !== '' ){
+        totalData = totalData.filter( (clinic) => {
+            return checkNameMatch(clinic, name)
+        })
+    }
+
+    // Filter again by Clinic Location
+    if (location !== 'allstates') {
+        totalData = totalData.filter ( (clinic) => {
+            return checkLocationMatch(clinic, location)
+        })
+    }
+
+    // Filter again by user's availability
+    totalData = totalData.filter( (clinic) => {
+        return checkAvailability(clinic, openTime, closeTime)
+    });
 
     res.locals.searchResults = totalData;
     return next();

@@ -1,11 +1,15 @@
+
 form {
-    position: relative;
+    display: grid;
+    grid-template-columns: 1;
+    grid-template-rows: 2;
 }
 
 #input-container {
     display: flex;
     justify-content: space-around;
     justify-self: center;
+    width: 80%;
 }
 
 .input-field {
@@ -36,4 +40,11 @@ button {
     height: 3rem;
     margin: 30px 0 10px 0;
     font-size: larger;
+    justify-self: center;
+}
+
+#description {
+    position: relative;
+    font-size: x-large;
+    font-family: 'Courier New', Courier, monospace;
 }

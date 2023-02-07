@@ -14,10 +14,18 @@ const InputContainer = (props) => {
         let payload = {
             name,
             location,
-            openTime,
-            closeTime
+            availability: {
+                openTime,
+                closeTime
+            }
         }
-        console.log(payload)
+
+        console.log(openTime, '-', closeTime)
+        
+        if (Number(closeTime) <= Number(openTime)) {
+            alert('Invalid availability. Please enter a valid time frame.')
+            return
+        }
 
         fetch('/',
         {
@@ -36,7 +44,7 @@ const InputContainer = (props) => {
     }
 
     return(
-        <div>
+        <div >
             <form onSubmit={handleSubmit}>
                 <div id='input-container'>
 
@@ -61,24 +69,24 @@ const InputContainer = (props) => {
                     </div>
 
                     <div className='input-field'>
-                        <label for='openTime'>Show all clinics open after:</label>
+                        <label for='openTime'>You are available from:</label>
                         <select 
                             id='openTime' 
                             value = {openTime}
                             onChange={ (e) => setOpenTime(e.target.value)}>
-                            <option value="-1">--</option>
+                            <option value="-1">Any time</option>
                             {getTimeOptions()}
                         </select>
                     </div>
 
                     <div className='input-field'>
-                        <label for='closeTime'>Show all clinics closed before:</label>
+                        <label for='closeTime'>You are available until:</label>
                         <select 
                             id='closeTime' 
                             type='number' 
                             value= {closeTime}
                             onChange={ (e) => setCloseTime(e.target.value)}>
-                            <option value="24">--</option>
+                            <option value="24">Any time</option>
                             {getTimeOptions()}
                         </select>
                     </div>
@@ -89,7 +97,7 @@ const InputContainer = (props) => {
                 </button>
             </form>
 
-
+            <div id='description'>Here are all the clincs that are open when you are available.</div>
          </div>
     )
 }

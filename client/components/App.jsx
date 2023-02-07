@@ -6,9 +6,9 @@ import '../styles/App.scss'
 const App = () => {
     const [clinic, setClinic] = useState([])
 
-    // useEffect( ()=> {
-    //     console.log('state changed in App.jsx', clinic)
-    // }, [clinic])
+    useEffect( ()=> {
+        console.log('state changed in App.jsx', clinic)
+    }, [clinic])
 
     return(
     <div id='app'>

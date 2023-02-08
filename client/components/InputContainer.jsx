@@ -19,8 +19,6 @@ const InputContainer = (props) => {
                 closeTime
             }
         }
-
-        console.log(openTime, '-', closeTime)
         
         if (Number(closeTime) <= Number(openTime)) {
             alert('Invalid availability. Please enter a valid time frame.')

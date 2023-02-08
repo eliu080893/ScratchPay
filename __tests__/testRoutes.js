@@ -2,7 +2,7 @@ const request = require('supertest');
 
 const server = 'http://localhost:3000';
 
-xdescribe('Route integration', () => {
+describe('Route integration', () => {
     describe('/', () => {
       describe('GET', () => {
         it('responds with 200 status and text/html content type', () => request(server)
@@ -17,9 +17,12 @@ xdescribe('Route integration', () => {
             .post('/')
             .send({ 
                 name: "",
-                location: "",
-                openTime: "",
-                closeTime: "" })
+                location: "allstates",
+                availability: {
+                    openTime: "-1",
+                    closeTime: "24"
+                }
+            })
             .expect('Content-Type', /application\/json/)
             .expect(200)
         )
@@ -29,9 +32,12 @@ xdescribe('Route integration', () => {
                 .post('/')
                 .send({ 
                     name: "",
-                    location: "",
-                    openTime: "",
-                    closeTime: "" });
+                    location: "allstates",
+                    availability: {
+                        openTime: "-1",
+                        closeTime: "24"
+                    }
+                })
 
             expect(response.body.length === 15)
         });
@@ -42,8 +48,11 @@ xdescribe('Route integration', () => {
                 .send({ 
                     name: "",
                     location: "California",
-                    openTime: "",
-                    closeTime: "" });
+                    availability: {
+                        openTime: "-1",
+                        closeTime: "24"
+                    }
+                })
 
             expect(response.body.length === 4)
         });
@@ -53,23 +62,26 @@ xdescribe('Route integration', () => {
                 .post('/')
                 .send({ 
                     name: "scratch",
-                    location: "",
-                    openTime: "",
-                    closeTime: "" });
-
+                    location: "allstates",
+                    availability: {
+                        openTime: "-1",
+                        closeTime: "24"
+                    }
+                })
             expect(response.body.length === 4)
         });
 
-        it('responds with the list of 9 clinics when 9:00 AM is entered in the earliest-open-time filter', async () => {
+        it('responds with the list of 9 clinics user is available from "9 - Anytime" ', async () => {
             const response = await request(server)
                 .post('/')
                 .send({ 
-                    name: "",
-                    location: "",
-                    openTime: "9",
-                    closeTime: "" });
-
-                    console.log(response.body.length)
+                    name: "scratch",
+                    location: "allstates",
+                    availability: {
+                        openTime: "9",
+                        closeTime: "24"
+                    }
+                })
 
             expect(response.body.length === 9)
         });

@@ -19,15 +19,14 @@ filterFunctions.checkLocationMatch = (entry, location) => {
     )
 }
 
-
 // Returns true if there is any overlap between when the user needs to go in, and the clinic operating hours
 filterFunctions.checkAvailability = (entry, openTime, closeTime) => {
     let openMinutes = parseInt(entry.availability.from.slice(3)) / 60 ;
-    let openHours = (parseInt(entry.availability.from));
+    let openHours = parseInt(entry.availability.from);
     let opening = openMinutes + openHours;
 
     let closeMinutes = parseInt(entry.availability.to.slice(3)) / 60 ;
-    let closeHours = (parseInt(entry.availability.to));
+    let closeHours = parseInt(entry.availability.to);
     let closing = closeMinutes + closeHours;
 
 
